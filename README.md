@@ -1,6 +1,6 @@
 # imgix-rails-note
 imgix-rails ix_image_tag/url now can't apply rails asset digest hash default.
-This repository provides a sample of add digest hash without monkey patch to imgix-rails.
+This repository provides a sample of add digest hash with using view helper to imgix-rails.
 
 ## tl;dr
 There are 2 ways to provide digest hash w/ imgix-rails helper.
@@ -19,7 +19,7 @@ image_url('machine_motion_capture.png')
 ```
 digest hash dropped down...
 
-let's add digest hash manualy, without monkey patch.
+let's add digest hash manualy using view helper.
 ### pattern 1, use asset_path
 asset_path returns digest hashed path, so we use it before path pass to ix_image_tag/url.
 
