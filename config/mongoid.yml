@@ -162,3 +162,14 @@ test:
         read:
           mode: :primary
         max_pool_size: 1
+        
+production:
+  clients:
+    default:
+      database: imgix_rails_note_production
+      hosts:
+        - localhost:27017
+      options:
+        read:
+          mode: :primary
+        max_pool_size: 1
