@@ -1,24 +1,60 @@
-# README
+# imgix-rails-note
+imgix-rails ix_image_tag/url now can't apply rails asset digest hash default.
+This repository provides a sample of add digest hash without monkey patch to imgix-rails.
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## tl;dr
+There are 2 ways to provide digest hash w/ imgix-rails helper.
 
-Things you may want to cover:
+image_url proveide digest hash like follow.
+```rb
+image_url('machine_motion_capture.png')
+=> "http://localhost:5000/assets/machine_motion_capture-6b8ad943af2821ca56772bd2c5f4c7dd36946ef45138c50ee43728429f260208.png"
+```
 
-* Ruby version
+but imgix-rails(4.0.0) ix_image_tag/url provide as follows
 
-* System dependencies
+```rb
+image_url('machine_motion_capture.png')
+=> "https://assets.imgix.net/assets/machine_motion_capture.png?ixlib=rails-4.0.0"
+```
+digest hash dropped down...
 
-* Configuration
+let's add digest hash manualy, without monkey patch.
+### pattern 1, use asset_path
+asset_path returns digest hashed path, so we use it before path pass to ix_image_tag/url.
 
-* Database creation
+```rb
+ix_image_url(asset_path('machine_motion_capture.png'))
+=> "https://assets.imgix.net/assets/machine_motion_capture-6b8ad943af2821ca56772bd2c5f4c7dd36946ef45138c50ee43728429f260208.png?ixlib=rails-4.0.0"
+```
 
-* Database initialization
+### pattern 2, use image_path
+image_path also returns digest hashed path.
 
-* How to run the test suite
+```rb
+ix_image_url(asset_path('machine_motion_capture.png'))
+=> "https://assets.imgix.net/assets/machine_motion_capture-6b8ad943af2821ca56772bd2c5f4c7dd36946ef45138c50ee43728429f260208.png?ixlib=rails-4.0.0"
+```
 
-* Services (job queues, cache servers, search engines, etc.)
+## tips
+Following custom view helper may help us a lot.
 
-* Deployment instructions
+```rb
+  def ex_ix_image_url(path, options = {}) 
+    ix_image_url(image_path(path), options)
+  end
 
-* ...
+  def ex_ix_image_tag(path, **options)
+    ix_image_tag(image_path(path), **options)
+  end
+```
+
+## example code
+We can check minimal example with clone this repository.
+1. clone & bundle install
+2. setup database
+```bash
+docker run -d -it --rm -p 27017:27017 mongo:3.6.12 mongod --bind_ip 0.0.0.0
+```
+3. execute rails (bundle exec rails s)
+4. access to http://localhost:3000
